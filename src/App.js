@@ -1,8 +1,8 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
+import { List, Button } from 'antd';
 import "antd/dist/antd.css";
-import {searchBook, getBooKChapter} from './service/api.service'
+import {searchMusic, getMusicDetails} from './service/api.service'
 import Loading from './components/Loading'
 
 export default class App extends React.Component {
@@ -16,10 +16,10 @@ export default class App extends React.Component {
     this.setState({
       loading: true
     })
-    searchBook(this.state.bookName).then(res => {
+    searchMusic({name:this.state.bookName,page:1}).then(res => {
       this.setState({
         loading: false,
-        bookList: res.data
+        bookList: res.data.list
       })
     })
   }
@@ -35,13 +35,48 @@ export default class App extends React.Component {
       return (<div></div>)
     }
   }
-  toDetails = (href) => {
-    getBooKChapter(href).then(res => {
+  toDetails = (id) => {
+    getMusicDetails(id).then(res => {
       console.log(res)
     })
   }
+  loadMore = () => {
+    return (
+      <div
+        style={{
+          textAlign: 'center',
+          marginTop: 12,
+          height: 32,
+          lineHeight: '32px',
+        }}
+      >
+        <Button>loading more</Button>
+      </div>
+    )
+  }
   renderList = () => {
-    return this.state.bookList.map((item, index) => <li onClick={() => {this.toDetails(item.href)}} key={index}>{item.title}</li>)
+    if(this.state.bookList.length>0&&!this.state.loading) {
+      return (
+        <List
+          style={{
+            width: '50%',
+            margin: '0 auto',
+            padding: '10px',
+            boxSizing: 'border-box',
+            color: 'white'
+          }}
+          bordered
+          itemLayout="horizontal"
+          loadMore={this.loadMore}
+          dataSource={this.state.bookList}
+          renderItem={item => (
+            <List.Item onClick={() => {this.toDetails(item.id)}}>
+              {item.songName}--{item.artistName}--{item.albumName}
+            </List.Item>
+          )}
+        />
+      )
+    }
   }
   render() {
     return <div className="App">
@@ -53,9 +88,7 @@ export default class App extends React.Component {
           {this.ShowLoading()} 
         </div>
         <div className="book-list">
-          <ul className="list-ul">
-            {this.renderList()}
-          </ul>
+          {this.renderList()}
         </div>
         <div className="chapter-list">
           <ul className="chapter-ul">

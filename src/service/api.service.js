@@ -1,7 +1,7 @@
 import axios from 'axios';
-const HOST_BASE = 'https://dahuotu.bdery.com/api'
+const HOST_BASE = 'https://www.mxnzp.com/api'
 
 // 搜索书籍
-export const searchBook = (params) => axios.get(`${HOST_BASE}/api.aspx?act=xiaoshuo&val=${params}`).then(res=>res.data)
+export const searchMusic = (params) => axios.get(`${HOST_BASE}/music/song/search?keyWord=${params.name}&page=${params.page}`).then(res=>res.data)
 // 书籍章节
-export const getBooKChapter = (params) => axios.get(`${HOST_BASE}/api.aspx?act=xiaoshuo_list&val=${params}`)
+export const getMusicDetails = (params) => axios.get(`${HOST_BASE}/music/song/detail?songId=${params}`)
